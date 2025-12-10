@@ -26,8 +26,11 @@ jobs:
         env:
           STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
         run: |
-          mkdir -p ~/.steam/config
-          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/.steam/config/config.vdf
+          mkdir -p "${{ steps.steamcmd.outputs.directory }}/config"
+          echo "$STEAM_CONFIG_VDF" | base64 --decode > "${{ steps.steamcmd.outputs.directory }}/config/config.vdf"
+
+          echo "Wrote config.vdf to:"
+          ls -l "${{ steps.steamcmd.outputs.directory }}/config"
 
       - name: Install Spacewar (480)
         env:
