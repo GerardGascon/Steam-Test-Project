@@ -21,45 +21,38 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y wget tar lib32gcc-s1
-
-      - name: Download SteamCMD
-        run: |
-          mkdir -p ~/steamcmd
-          cd ~/steamcmd
-          wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
-          tar -xvzf steamcmd_linux.tar.gz
+          sudo apt-get install -y wget tar lib32gcc-s1 xvfb steam
 
       - name: Restore Steam config.vdf
         env:
           STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
         run: |
-          mkdir -p ~/steamcmd/config
-          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/steamcmd/config/config.vdf
-          chmod 777 ~/steamcmd/config/config.vdf
-          
-          mkdir -p ~/Steam/config
-          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/Steam/config/config.vdf
-          chmod 777 ~/Steam/config/config.vdf
+          mkdir -p ~/.steam/config
+          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/.steam/config/config.vdf
+          chmod 777 ~/.steam/config/config.vdf
 
-      - name: Test SteamCMD login
-        env:
-          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+      - name: Start Xvfb (headless display)
         run: |
-          echo "Logging in with cached credentials..."
-          ~/steamcmd/steamcmd.sh +login "$STEAM_USERNAME" +quit
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
 
-      - name: Install Spacewar (480)
-        env:
-          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+      - name: Start Steam client
         run: |
-          ~/steamcmd/steamcmd.sh \
-            +login "$STEAM_USERNAME" \
-            +app_update 480 validate \
-            +quit
+          echo "Starting Steam client in background using cached login..."
+          # Start Steam and redirect both stdout and stderr
+          steam -silent > steam.log 2>&1 &
+          STEAM_PID=$!
+          # Wait a bit for initialization
+          sleep 30
+          # Print Steam log to Actions console
+          echo "=== Steam output ==="
+          cat steam.log
+          # Keep Steam running in background
+          disown $STEAM_PID
 
-      - name: Run tests
+      - name: Run Unity tests
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
