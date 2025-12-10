@@ -38,6 +38,8 @@ jobs:
           mkdir -p ~/steamcmd/config
           echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/steamcmd/config/config.vdf
           chmod 777 ~/steamcmd/config/config.vdf
+          
+          mkdir -p ~/Steam/config
           echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/Steam/config/config.vdf
           chmod 777 ~/Steam/config/config.vdf
 
