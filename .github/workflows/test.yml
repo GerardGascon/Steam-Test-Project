@@ -47,13 +47,13 @@ jobs:
           STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
         run: |
           echo "Logging in with cached credentials..."
-          steamcmd +login "$STEAM_USERNAME" +quit
+          ~/steamcmd/steamcmd.sh +login "$STEAM_USERNAME" +quit
 
       - name: Install Spacewar (480)
         env:
           STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
         run: |
-          steamcmd \
+          ~/steamcmd/steamcmd.sh \
             +login "$STEAM_USERNAME" \
             +app_update 480 validate \
             +quit
