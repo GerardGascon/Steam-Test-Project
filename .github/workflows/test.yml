@@ -1,6 +1,6 @@
 name: Run Tests
 on:
-  [push, pull_request, workflow_dispatch]
+  [ push, pull_request, workflow_dispatch ]
 
 jobs:
   build:
@@ -50,6 +50,17 @@ jobs:
           echo "=== Steam output ==="
           cat steam.log
           disown $STEAM_PID
+
+      - name: Test Steam is running
+        run: |
+          echo "Checking if Steam is running..."
+          if pgrep -x steam > /dev/null; then
+            echo "Steam is running!"
+          else
+            echo "Steam is NOT running!"
+            cat steam.log
+            exit 1
+          fi
 
 #      - name: Run Unity tests
 #        uses: game-ci/unity-test-runner@v4
