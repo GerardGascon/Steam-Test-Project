@@ -32,7 +32,7 @@ jobs:
 
           echo "${{ steps.steamcmd.outputs.executable }}"
           echo "Wrote config.vdf to:"
-          ls -l "${{ steps.steamcmd.outputs.directory }}/config"
+          ls -l "${{ steps.steamcmd.outputs.directory }}"
 
       - name: Install Spacewar (480)
         env:
