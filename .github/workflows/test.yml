@@ -30,6 +30,7 @@ jobs:
           mkdir -p "${{ steps.steamcmd.outputs.directory }}/config"
           echo "$STEAM_CONFIG_VDF" | base64 --decode > "${{ steps.steamcmd.outputs.directory }}/config/config.vdf"
 
+          echo "${{ steps.steamcmd.outputs.executable }}"
           echo "Wrote config.vdf to:"
           ls -l "${{ steps.steamcmd.outputs.directory }}/config"
 
