@@ -20,6 +20,7 @@ jobs:
             Library-
 
       - name: Setup steamcmd
+        id: steamcmd
         uses: CyberAndrii/setup-steamcmd@v1
 
       - name: Restore Steam config.vdf
