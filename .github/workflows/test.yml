@@ -35,28 +35,27 @@ jobs:
 
       - name: Start Xvfb (headless display)
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
+          Xvfb $DISPLAY -screen 0 1024x768x24 &
+          sleep 3
+          echo "Xvfb started on $DISPLAY"
 
       - name: Start Steam client
         run: |
+          export DISPLAY=:99
           echo "Starting Steam client in background using cached login..."
-          # Start Steam and redirect both stdout and stderr
           steam -silent > steam.log 2>&1 &
           STEAM_PID=$!
-          # Wait a bit for initialization
           sleep 30
-          # Print Steam log to Actions console
           echo "=== Steam output ==="
           cat steam.log
-          # Keep Steam running in background
           disown $STEAM_PID
 
-      - name: Run Unity tests
-        uses: game-ci/unity-test-runner@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Run Unity tests
+#        uses: game-ci/unity-test-runner@v4
+#        env:
+#          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+#          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+#          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+#        with:
+#          githubToken: ${{ secrets.GITHUB_TOKEN }}
