@@ -19,20 +19,26 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Setup steamcmd
-        id: steamcmd
+      - name: Setup SteamCMD
         uses: CyberAndrii/setup-steamcmd@v1
 
       - name: Restore Steam config.vdf
         env:
           STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
         run: |
-          mkdir -p "${{ steps.steamcmd.outputs.directory }}/config"
-          echo "$STEAM_CONFIG_VDF" | base64 --decode > "${{ steps.steamcmd.outputs.directory }}/config/config.vdf"
+          mkdir -p ~/.steam/config
+          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/.steam/config/config.vdf
+          chmod 600 ~/.steam/config/config.vdf
+          
+          echo "DEBUG: ~/.steam/config/config.vdf exists:"
+          ls -l ~/.steam/config
 
-          echo "${{ steps.steamcmd.outputs.executable }}"
-          echo "Wrote config.vdf to:"
-          ls -l "${{ steps.steamcmd.outputs.directory }}"
+      - name: Test SteamCMD login
+        env:
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+        run: |
+          echo "Logging in with cached credentials..."
+          steamcmd +login "$STEAM_USERNAME" +quit
 
       - name: Install Spacewar (480)
         env:
