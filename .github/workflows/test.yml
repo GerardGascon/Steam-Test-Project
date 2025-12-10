@@ -19,19 +19,28 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Setup SteamCMD
-        uses: CyberAndrii/setup-steamcmd@v1
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget tar lib32gcc-s1
+
+      - name: Download SteamCMD
+        run: |
+          mkdir -p ~/steamcmd
+          cd ~/steamcmd
+          wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+          tar -xvzf steamcmd_linux.tar.gz
 
       - name: Restore Steam config.vdf
         env:
           STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
         run: |
-          mkdir -p ~/.steam/config
-          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/.steam/config/config.vdf
-          chmod 600 ~/.steam/config/config.vdf
+          mkdir -p ~/steamcmd/config
+          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/steamcmd/config/config.vdf
+          chmod 600 ~/steamcmd/config/config.vdf
           
-          echo "DEBUG: ~/.steam/config/config.vdf exists:"
-          ls -l ~/.steam/config
+          echo "DEBUG: ~/steamcmd/config/config.vdf exists:"
+          ls -l ~/steamcmd/config
 
       - name: Test SteamCMD login
         env:
