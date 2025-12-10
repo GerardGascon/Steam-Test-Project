@@ -37,7 +37,7 @@ jobs:
         run: |
           mkdir -p ~/steamcmd/config
           echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/steamcmd/config/config.vdf
-          chmod 600 ~/steamcmd/config/config.vdf
+          chmod 777 ~/steamcmd/config/config.vdf
           
           echo "DEBUG: ~/steamcmd/config/config.vdf exists:"
           ls -l ~/steamcmd/config
