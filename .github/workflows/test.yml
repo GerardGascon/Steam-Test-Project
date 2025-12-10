@@ -28,11 +28,11 @@ jobs:
           sudo apt-get install -y steamcmd
 
       - name: Restore Steam config.vdf
-          env:
-            STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
-          run: |
-            mkdir -p ~/.steam/config
-            echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/.steam/config/config.vdf
+        env:
+          STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
+        run: |
+          mkdir -p ~/.steam/config
+          echo "$STEAM_CONFIG_VDF" | base64 --decode > ~/.steam/config/config.vdf
 
       - name: Install Spacewar (480)
         env:
